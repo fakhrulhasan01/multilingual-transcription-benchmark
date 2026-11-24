@@ -15,7 +15,7 @@ Words transcribed exactly right (100% minus word error rate), pooled over 20 rec
 | Arabic | 411 | **94.6%** | 93.9% (25 errors) | 95.4% (19 errors) | 91.5% (35 errors) |
 | Hindi | 527 | **93.2%** | 93.4% (35 errors) | 93.0% (37 errors) | 75.3% (130 errors) |
 | Urdu | 561 | **82.3%** | 81.5% (104 errors) | 83.1% (95 errors) | 76.8% (130 errors) |
-| Bangla | 408 | **85.9%** | 85.8% (58 errors) | 86.0% (57 errors) | still running, added shortly |
+| Bangla | 408 | **85.9%** | 85.8% (58 errors) | 86.0% (57 errors) | 29.2% (289 errors) |
 
 **Bangla has a second number.** Bangla has many accepted spellings for the same word, and the FLEURS reference sentences mix them: ভাল and ভালো, সরকারী and সরকারি, গভীর ভাবে and গভীরভাবে are all correct, but the strict count above marks every one as an error. We went through every difference by hand and marked whether the meaning changed. In TranscriptGo's transcripts, 12 of 408 words (run 1) and 13 of 408 words (run 2) changed the meaning, so **about 97% of Bangla words were right in meaning**. Every decision is listed in [`data/bn_in/meaning-review-run1.tsv`](data/bn_in/meaning-review-run1.tsv) and [`run2`](data/bn_in/meaning-review-run2.tsv), so you can disagree with any of them.
 
