@@ -18,7 +18,7 @@ import csv, glob, os, re, unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LANGS = [("es_419", "Spanish"), ("fr_fr", "French"), ("ar_eg", "Arabic"),
-         ("hi_in", "Hindi"), ("ur_pk", "Urdu"), ("bn_in", "Bangla")]
+         ("hi_in", "Hindi"), ("ur_pk", "Urdu"), ("bn_in", "Bangla"), ("id_id", "Indonesian")]
 HARAKAT = re.compile("[ً-ْٰـ]")
 ALEF = str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ٱ": "ا"})
 

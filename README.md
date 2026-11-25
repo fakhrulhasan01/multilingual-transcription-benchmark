@@ -1,12 +1,12 @@
 # Multilingual transcription benchmark
 
-How many words does speech-to-text get exactly right in Spanish, French, Arabic, Hindi, Urdu and Bangla? This repository answers that on a public dataset, with every transcript, the scoring script and the method, so anyone can check the numbers or add another service.
+How many words does speech-to-text get exactly right in Spanish, French, Arabic, Hindi, Urdu, Bangla and Indonesian? This repository answers that on a public dataset, with every transcript, the scoring script and the method, so anyone can check the numbers or add another service.
 
 **Published by [TranscriptGo](https://transcriptgo.app).** We run a transcription service and we test our own service here, next to OpenAI's open Whisper large-v3. Read the results with that in mind, and please repeat the test yourself: everything you need is in this repository.
 
 ## Results
 
-Words transcribed exactly right (100% minus word error rate), pooled over 20 recordings per language. Tested on 24 November 2026.
+Words transcribed exactly right (100% minus word error rate), pooled over 20 recordings per language. Tested on 24 November 2026 (Indonesian on 25 November 2026).
 
 | Language | Words | transcriptgo (average of runs) | transcriptgo-run1 | transcriptgo-run2 | whisper-large-v3 |
 |---|---|---|---|---|---|
@@ -16,14 +16,15 @@ Words transcribed exactly right (100% minus word error rate), pooled over 20 rec
 | Hindi | 527 | **93.2%** | 93.4% (35 errors) | 93.0% (37 errors) | 75.3% (130 errors) |
 | Urdu | 561 | **82.3%** | 81.5% (104 errors) | 83.1% (95 errors) | 76.8% (130 errors) |
 | Bangla | 408 | **85.9%** | 85.8% (58 errors) | 86.0% (57 errors) | 29.2% (289 errors) |
+| Indonesian | 397 | **94.5%** | 94.7% (21 errors) | 94.2% (23 errors) | 94.0% (24 errors) |
 
 **Bangla has a second number.** Bangla has many accepted spellings for the same word, and the FLEURS reference sentences mix them: ভাল and ভালো, সরকারী and সরকারি, গভীর ভাবে and গভীরভাবে are all correct, but the strict count above marks every one as an error. We went through every difference by hand and marked whether the meaning changed. In TranscriptGo's transcripts, 12 of 408 words (run 1) and 13 of 408 words (run 2) changed the meaning, so **about 97% of Bangla words were right in meaning**. Every decision is listed in [`data/bn_in/meaning-review-run1.tsv`](data/bn_in/meaning-review-run1.tsv) and [`run2`](data/bn_in/meaning-review-run2.tsv), so you can disagree with any of them.
 
 ## What was tested
 
-**The recordings.** [FLEURS](https://huggingface.co/datasets/google/fleurs) is a free speech dataset from Google (CC BY 4.0). Each recording is one person reading one sentence, and the dataset includes the exact sentence they read. We took the first 20 recordings of each language's test set, in the order they appear in its `test.tar.gz`: Spanish (Latin America, `es_419`), French (`fr_fr`), Arabic (Egypt, `ar_eg`), Hindi (`hi_in`), Urdu (Pakistan, `ur_pk`) and Bangla (India, `bn_in`). About 400 to 600 words per language, 23.5 minutes of audio in total. The exact files and reference sentences are in `data/<language>/clips.tsv`.
+**The recordings.** [FLEURS](https://huggingface.co/datasets/google/fleurs) is a free speech dataset from Google (CC BY 4.0). Each recording is one person reading one sentence, and the dataset includes the exact sentence they read. We took the first 20 recordings of each language's test set, in the order they appear in its `test.tar.gz`: Spanish (Latin America, `es_419`), French (`fr_fr`), Arabic (Egypt, `ar_eg`), Hindi (`hi_in`), Urdu (Pakistan, `ur_pk`), Bangla (India, `bn_in`) and Indonesian (`id_id`, added on 25 November 2026). About 400 to 600 words per language. The exact files and reference sentences are in `data/<language>/clips.tsv`.
 
-**TranscriptGo.** The live service at transcriptgo.app, with the same processing every upload gets on a free account (free and paid accounts use the same engines for these languages), and the spoken language chosen as a user would choose it. Each language was run twice, because the service varies by about one point between runs; the headline number pools both runs. The Bangla runs were made after a fix released the same day that keeps Hindi letters out of Bangla transcripts.
+**TranscriptGo.** The live service at transcriptgo.app, with the same processing every upload gets on a free account (free and paid accounts use the same engines for these languages), and the spoken language chosen as a user would choose it. Each language was run twice, because the service varies by about one point between runs; the headline number pools both runs. The Bangla runs were made after a fix released the same day that keeps Hindi letters out of Bangla transcripts. Indonesian was measured on 25 November 2026, the day after the service moved Indonesian to a different speech engine.
 
 **Whisper large-v3.** OpenAI's open model from [github.com/openai/whisper](https://github.com/openai/whisper) (package version 20250625), run with the command-line defaults: beam search 5, best of 5, temperature fallback, full precision on CPU, with the spoken language given. Many transcription services are built on this model, which makes it a useful reference point.
 
@@ -42,7 +43,7 @@ Everything else counts as an error: a misspelled name, a missing word, "1" writt
 ## What the numbers do and do not show
 
 - These are clean recordings of one person reading. Noisy rooms, phone audio, music and people talking over each other lower the score of every service.
-- 20 recordings per language is a small sample: a difference of one or two points between two systems is within the noise.
+- 20 recordings per language is a small sample: a difference of one or two points between two systems is within the noise. Spanish and Indonesian are such cases: the two systems are effectively tied there.
 - Only TranscriptGo and Whisper large-v3 are tested here. We would welcome results for other services (see below).
 
 ## Repeat it, or add a service
