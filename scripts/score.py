@@ -12,13 +12,17 @@ Before comparing, both sides get the same light normalisation, and nothing else:
   - Hindi: the nukta dot is removed
 Letters and vowel signs are never touched, so a spelling difference is an error.
 
+Korean also gets a letter score: the same normalised text with every space
+removed, compared letter by letter, because Korean spacing is flexible and the
+word score counts '통행 금지' against '통행금지' as two errors.
+
 Usage: python scripts/score.py            -> prints a table, writes results/summary.md
 """
 import csv, glob, os, re, unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LANGS = [("es_419", "Spanish"), ("fr_fr", "French"), ("ar_eg", "Arabic"),
-         ("hi_in", "Hindi"), ("ur_pk", "Urdu"), ("bn_in", "Bangla"), ("id_id", "Indonesian")]
+         ("hi_in", "Hindi"), ("ur_pk", "Urdu"), ("bn_in", "Bangla"), ("id_id", "Indonesian"), ("ko_kr", "Korean")]
 HARAKAT = re.compile("[ً-ْٰـ]")
 ALEF = str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ٱ": "ا"})
 
@@ -67,7 +71,7 @@ def read_tsv(path):
         return list(csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE))
 
 
-def score(system_dir, lang):
+def score(system_dir, lang, letters=False):
     refs = {r["file"]: r["reference"] for r in read_tsv(os.path.join(ROOT, "data", lang, "clips.tsv"))}
     path = os.path.join(system_dir, f"{lang}.tsv")
     if not os.path.exists(path):
@@ -76,6 +80,8 @@ def score(system_dir, lang):
     words = errors = 0
     for name, ref in refs.items():
         r, h = normalise(ref, lang), normalise(hyps.get(name, ""), lang)
+        if letters:
+            r, h = list("".join(r)), list("".join(h))
         words += len(r)
         errors += sum(edit_counts(r, h))
     return words, errors
@@ -103,9 +109,27 @@ def main():
             cells.insert(0, f"**{100 - 100 * run_errors / run_words:.1f}%**" if run_words else "n/a")
         lines.append(f"| {label} | {words or ''} | " + " | ".join(cells) + " |")
     table = "\n".join(lines)
-    print(table)
+
+    # Korean letters, spaces ignored
+    cells, letters, rl = [], None, [0, 0]
+    for s in systems:
+        r = score(s, "ko_kr", letters=True)
+        if r is None:
+            cells.append("n/a")
+            continue
+        letters, errors = r
+        if s in runs:
+            rl[0] += letters; rl[1] += errors
+        cells.append(f"{100 - 100 * errors / letters:.1f}% ({errors} errors)")
+    if len(runs) > 1:
+        cells.insert(0, f"**{100 - 100 * rl[1] / rl[0]:.1f}%**" if rl[0] else "n/a")
+    korean = "\n".join([lines[0].replace("| Words |", "| Letters |"), lines[1],
+                        f"| Korean | {letters or ''} | " + " | ".join(cells) + " |"])
+
+    print(table + "\n\nKorean letters, spaces ignored:\n" + korean)
     with open(os.path.join(ROOT, "results", "summary.md"), "w", encoding="utf-8") as f:
-        f.write("Words transcribed exactly right (100% minus word error rate), pooled over 20 clips per language.\n\n" + table + "\n")
+        f.write("Words transcribed exactly right (100% minus word error rate), pooled over 20 clips per language.\n\n" + table + "\n"
+                "\nKorean letters right (spaces ignored), pooled over the same 20 clips.\n\n" + korean + "\n")
 
 
 if __name__ == "__main__":

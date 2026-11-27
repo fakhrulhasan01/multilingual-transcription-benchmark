@@ -9,7 +9,7 @@ Audio is saved to audio/<lang>/ (not committed; FLEURS is CC BY 4.0).
 """
 import csv, io, os, sys, tarfile, urllib.request
 
-LANGS = os.environ.get("LANGS", "es_419,fr_fr,ar_eg,hi_in,ur_pk,bn_in,id_id").split(",")
+LANGS = os.environ.get("LANGS", "es_419,fr_fr,ar_eg,hi_in,ur_pk,bn_in,id_id,ko_kr").split(",")
 BASE = "https://huggingface.co/datasets/google/fleurs/resolve/main/data"
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 20
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

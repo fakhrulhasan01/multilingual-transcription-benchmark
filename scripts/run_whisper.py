@@ -7,7 +7,7 @@ as it is for TranscriptGo. Output: results/whisper-large-v3/<lang>.tsv
 import csv, os, sys, time, whisper
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CODES = {"es_419": "es", "fr_fr": "fr", "ar_eg": "ar", "hi_in": "hi", "ur_pk": "ur", "bn_in": "bn", "id_id": "id"}
+CODES = {"es_419": "es", "fr_fr": "fr", "ar_eg": "ar", "hi_in": "hi", "ur_pk": "ur", "bn_in": "bn", "id_id": "id", "ko_kr": "ko", "ko_no_speech": "ko"}
 langs = sys.argv[1:] or list(CODES)
 model = whisper.load_model("large-v3", device="cpu")
 out_dir = os.path.join(ROOT, "results", "whisper-large-v3"); os.makedirs(out_dir, exist_ok=True)
